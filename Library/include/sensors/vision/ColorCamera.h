@@ -47,8 +47,9 @@ namespace sf
          \param frequency the sampling frequency of the sensor [Hz] (-1 if updated every simulation step)
          \param minDistance the minimum drawing distance [m]
          \param maxDistance the maximum drawing distance [m]
+         \param stereoBaseline distance between stereo cameras
          */
-        ColorCamera(std::string uniqueName, unsigned int resolutionX, unsigned int resolutionY, Scalar horizFOVDeg, Scalar frequency = Scalar(-1),
+        ColorCamera(std::string uniqueName, unsigned int resolutionX, unsigned int resolutionY, Scalar horizFOVDeg, Scalar stereoBaseline, Scalar frequency = Scalar(-1),
            Scalar minDistance = Scalar(STD_NEAR_PLANE_DISTANCE), Scalar maxDistance = Scalar(STD_FAR_PLANE_DISTANCE)); //Rendering options
         
         //! A destructor.
@@ -103,6 +104,7 @@ namespace sf
         void InitGraphics();
         
         OpenGLRealCamera* glCamera;
+        Scalar stereoBaseline;
         glm::vec2 depthRange;
         GLubyte* imageData;
         std::function<void(ColorCamera*)> newDataCallback;

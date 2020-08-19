@@ -33,8 +33,8 @@
 namespace sf
 {
 
-ColorCamera::ColorCamera(std::string uniqueName, unsigned int resolutionX, unsigned int resolutionY, Scalar horizFOVDeg, Scalar frequency, 
-    Scalar minDistance, Scalar maxDistance) : Camera(uniqueName, resolutionX, resolutionY, horizFOVDeg, frequency)
+ColorCamera::ColorCamera(std::string uniqueName, unsigned int resolutionX, unsigned int resolutionY, Scalar horizFOVDeg, Scalar stereoBaseline, Scalar frequency, 
+    Scalar minDistance, Scalar maxDistance) : Camera(uniqueName, resolutionX, resolutionY, horizFOVDeg, frequency, stereoBaseline)
 {
     depthRange = glm::vec2((GLfloat)minDistance, (GLfloat)maxDistance);
     newDataCallback = NULL;

@@ -41,12 +41,13 @@ namespace sf
          \param resolutionY the vertical resolution[pix]
          \param horizFOVDeg the horizontal field of view [deg]
          \param frequency the sampling frequency of the sensor [Hz] (-1 if updated every simulation step)
+         \param stereoBaseline distance between stereo cameras
          */
-        Camera(std::string uniqueName, unsigned int resolutionX, unsigned int resolutionY, Scalar horizFOVDeg, Scalar frequency);
+        Camera(std::string uniqueName, unsigned int resolutionX, unsigned int resolutionY, Scalar horizFOVDeg, Scalar frequency, Scalar stereoBaseline = 0);
         
         //! A destructor.
         virtual ~Camera();
-        
+
         //! A method performing internal sensor state update.
         /*!
          \param dt the step time of the simulation [s]
@@ -94,6 +95,9 @@ namespace sf
         
         //! A method returning the horizontal field of view of the camera [deg].
         Scalar getHorizontalFOV();
+
+        //! A method returning the stereo baseline.
+        Scalar getStereoBaseline();
         
         //! A method returning the resolution of the camera image.
         /*!
@@ -111,6 +115,7 @@ namespace sf
         
     protected:
         Scalar fovH;
+        Scalar stereoBaseline;
         unsigned int resX;
         unsigned int resY;
         unsigned int screenX;

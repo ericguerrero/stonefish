@@ -30,7 +30,7 @@
 namespace sf
 {
 
-Camera::Camera(std::string uniqueName, unsigned int resolutionX, unsigned int resolutionY, Scalar horizFOVDeg, Scalar frequency) : VisionSensor(uniqueName, frequency)
+Camera::Camera(std::string uniqueName, unsigned int resolutionX, unsigned int resolutionY, Scalar horizFOVDeg, Scalar frequency, Scalar stereoBaseline) : VisionSensor(uniqueName, frequency)
 {
     fovH = horizFOVDeg <= Scalar(0) ? Scalar(90) : (horizFOVDeg > Scalar(360) ? Scalar(360) : horizFOVDeg);
     resX = resolutionX > 0 ? (resolutionX + resolutionX % 2) : 2;
@@ -45,6 +45,12 @@ Camera::~Camera()
 Scalar Camera::getHorizontalFOV()
 {
     return fovH;
+}
+
+
+Scalar Camera::getStereoBaseline()
+{
+    return stereoBaseline;
 }
 
 void Camera::getResolution(unsigned int& x, unsigned int& y)

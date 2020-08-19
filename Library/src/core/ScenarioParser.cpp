@@ -1531,6 +1531,7 @@ bool ScenarioParser::ParseSensor(XMLElement* element, Robot* robot)
         Transform origin;
         int resX, resY;
         Scalar hFov;
+        Scalar baseline;
         
         if((item = element->FirstChildElement("link")) == nullptr)
             return false;
@@ -1541,7 +1542,8 @@ bool ScenarioParser::ParseSensor(XMLElement* element, Robot* robot)
         if((item = element->FirstChildElement("specs")) == nullptr 
             || item->QueryAttribute("resolution_x", &resX) != XML_SUCCESS 
             || item->QueryAttribute("resolution_y", &resY) != XML_SUCCESS
-            || item->QueryAttribute("horizontal_fov", &hFov) != XML_SUCCESS)
+            || item->QueryAttribute("horizontal_fov", &hFov) != XML_SUCCESS
+            || item->QueryAttribute("baseline", &baseline) != XML_SUCCESS)
             return false;
             
         ColorCamera* cam;
@@ -1552,11 +1554,11 @@ bool ScenarioParser::ParseSensor(XMLElement* element, Robot* robot)
             Scalar maxDist(100000.0);
             item->QueryAttribute("minimum_distance", &minDist);
             item->QueryAttribute("maximum_distance", &maxDist);
-            cam = new ColorCamera(sensorName, resX, resY, hFov, rate, minDist, maxDist);
+            cam = new ColorCamera(sensorName, resX, resY, hFov, rate, baseline, minDist, maxDist);
         }
         else
         {
-            cam = new ColorCamera(sensorName, resX, resY, hFov, rate);
+            cam = new ColorCamera(sensorName, resX, resY, hFov, rate, baseline);
         }
         robot->AddVisionSensor(cam, robot->getName() + "/" + std::string(linkName), origin);
     }
