@@ -53,6 +53,7 @@
 #include "sensors/scalar/Multibeam.h"
 #include "sensors/vision/ColorCamera.h"
 #include "sensors/vision/DepthCamera.h"
+#include "sensors/vision/StereoCamera.h"
 #include "sensors/vision/Multibeam2.h"
 #include "sensors/vision/FLS.h"
 #include "sensors/vision/SSS.h"
@@ -1531,6 +1532,7 @@ bool ScenarioParser::ParseSensor(XMLElement* element, Robot* robot)
         Transform origin;
         int resX, resY;
         Scalar hFov;
+        Scalar minDist, maxDist;
         
         if((item = element->FirstChildElement("link")) == nullptr)
             return false;
@@ -1541,23 +1543,14 @@ bool ScenarioParser::ParseSensor(XMLElement* element, Robot* robot)
         if((item = element->FirstChildElement("specs")) == nullptr 
             || item->QueryAttribute("resolution_x", &resX) != XML_SUCCESS 
             || item->QueryAttribute("resolution_y", &resY) != XML_SUCCESS
-            || item->QueryAttribute("horizontal_fov", &hFov) != XML_SUCCESS)
+            || item->QueryAttribute("horizontal_fov", &hFov) != XML_SUCCESS
+            || item->QueryAttribute("minimum_distance", &minDist) != XML_SUCCESS
+            || item->QueryAttribute("maximum_distance", &maxDist) != XML_SUCCESS)
             return false;
             
         ColorCamera* cam;
-        
-        if((item = element->FirstChildElement("rendering")) != nullptr) //Optional parameters
-        {
-            Scalar minDist(0.02);
-            Scalar maxDist(100000.0);
-            item->QueryAttribute("minimum_distance", &minDist);
-            item->QueryAttribute("maximum_distance", &maxDist);
-            cam = new ColorCamera(sensorName, resX, resY, hFov, rate, minDist, maxDist);
-        }
-        else
-        {
-            cam = new ColorCamera(sensorName, resX, resY, hFov, rate);
-        }
+        cam = new ColorCamera(sensorName, resX, resY, hFov, rate, minDist, maxDist);
+
         robot->AddVisionSensor(cam, robot->getName() + "/" + std::string(linkName), origin);
     }
     else if(typeStr == "depthcamera")
@@ -1584,6 +1577,34 @@ bool ScenarioParser::ParseSensor(XMLElement* element, Robot* robot)
         
         DepthCamera* dcam = new DepthCamera(sensorName, resX, resY, hFov, depthMin, depthMax, rate);
         robot->AddVisionSensor(dcam, robot->getName() + "/" + std::string(linkName), origin);
+    }
+        else if(typeStr == "stereocamera")
+    {
+        const char* linkName = nullptr;
+        Transform origin;
+        int resX, resY;
+        Scalar hFov;
+        Scalar baseline;
+        Scalar minDist, maxDist;
+        
+        if((item = element->FirstChildElement("link")) == nullptr)
+            return false;
+        if(item->QueryStringAttribute("name", &linkName) != XML_SUCCESS)
+            return false;
+        if((item = element->FirstChildElement("origin")) == nullptr || !ParseTransform(item, origin))
+            return false;
+        if((item = element->FirstChildElement("specs")) == nullptr 
+            || item->QueryAttribute("resolution_x", &resX) != XML_SUCCESS 
+            || item->QueryAttribute("resolution_y", &resY) != XML_SUCCESS
+            || item->QueryAttribute("baseline", &baseline) != XML_SUCCESS
+            || item->QueryAttribute("horizontal_fov", &hFov) != XML_SUCCESS
+            || item->QueryAttribute("minimum_distance", &minDist) != XML_SUCCESS
+            || item->QueryAttribute("maximum_distance", &maxDist) != XML_SUCCESS)
+            return false;
+            
+        StereoCamera* cam;
+        cam = new StereoCamera(sensorName, resX, resY, hFov, rate, baseline, minDist, maxDist);
+        robot->AddVisionSensor(cam, robot->getName() + "/" + std::string(linkName), origin);
     }
     else if(typeStr == "multibeam2d")
     {

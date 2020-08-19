@@ -53,6 +53,7 @@ void Camera::getResolution(unsigned int& x, unsigned int& y)
     y = resY;
 }
 
+
 void Camera::setDisplayOnScreen(bool display, unsigned int x, unsigned int y, float scale)
 {
     screen = display;
